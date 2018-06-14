@@ -50,18 +50,12 @@ class LayerBase():
 
         self.weights = self.weights - weight_update
 
-    def calcuate_dloss_dz(self, delta):
-        derivative_values = self.activation_function_derivative(
-            self.activation_values)
-
-        dloss_dz = np.multiply(delta, derivative_values)
-
-        return dloss_dz
-
     def backprop(self, delta, eta):
+        dloss_dz = self.calcuate_dloss_dz(delta)
+
         # Calculate the delta for the next layer
         # Must be done before weight update
-        new_delta = np.dot(self.weights.T, delta)
+        new_delta = np.dot(self.weights.T, dloss_dz)
 
         # Calculate weight update
         weight_update = eta * np.dot(delta, self.input_values.T)
@@ -71,7 +65,17 @@ class LayerBase():
         return new_delta
 
 
-class TanhLayer(LayerBase):
+class NonLinearBackprop():
+    def calcuate_dloss_dz(self, delta):
+        derivative_values = self.activation_function_derivative(
+            self.activation_values)
+
+        dloss_dz = np.multiply(delta, derivative_values)
+
+        return dloss_dz
+
+
+class TanhLayer(NonLinearBackprop, LayerBase):
     def __init__(self, *args):
         super().__init__(*args)
         # Assign hyperbolic_tangent function to be the activation function
@@ -79,9 +83,21 @@ class TanhLayer(LayerBase):
         self.activation_function_derivative = hyperbolic_tangent_derivative
 
 
-class ReluLayer(LayerBase):
+class ReluLayer(NonLinearBackprop, LayerBase):
     def __init__(self, *args):
         super().__init__(*args)
         # Assign relu function to be the activation function
         self.activation_function = relu
         self.activation_function_derivative = relu_derivative
+
+
+class LinearBackprop():
+    def calcuate_dloss_dz(self, delta):
+        return delta
+
+
+class LinearLayer(LinearBackprop, LayerBase):
+    def __init__(self, *args):
+        super().__init__(*args)
+        # Return the input as without modification
+        self.activation_function = lambda x: x
