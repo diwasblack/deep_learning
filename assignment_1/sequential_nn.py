@@ -49,13 +49,7 @@ class SequentialNeuralNet():
         # Assumes using the L2 distance for cost
         dloss_dy = predicted_output - target_matrix
 
-        delta = np.dot(self.layers[-1].weights.T, dloss_dy)
-
-        # Weight update for final layer
-        weight_update = eta * \
-            np.dot(dloss_dy, self.layers[-1].input_values.T)
-
-        self.layers[-1].update_weights(weight_update)
+        delta = self.layers[-1].backprop(dloss_dy, eta)
 
         for layer_index in range(self.number_of_layers-2, -1, -1):
 
@@ -63,14 +57,8 @@ class SequentialNeuralNet():
             layer = self.layers[layer_index]
 
             # Propagate delta through layers
-            dloss_dz = layer.backward_pass(delta)
-
-            # Calculate delta before weight update
-            delta = np.dot(layer.weights.T, dloss_dz)
-
-            # Update weight of the layer
-            weight_update = eta * np.dot(dloss_dz, layer.input_values.T)
-            layer.update_weights(weight_update)
+            dloss_dz = layer.calcuate_dloss_dz(delta)
+            delta = layer.backprop(dloss_dz, eta)
 
     def train(self, input_matrix, target_matrix):
         number_of_iterations = 0

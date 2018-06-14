@@ -50,17 +50,25 @@ class LayerBase():
 
         self.weights = self.weights - weight_update
 
-    def backward_pass(self, delta):
-        """
-        Layer method to calculate the delta updates from next layer delta
-        """
-
+    def calcuate_dloss_dz(self, delta):
         derivative_values = self.activation_function_derivative(
             self.activation_values)
 
         dloss_dz = np.multiply(delta, derivative_values)
 
         return dloss_dz
+
+    def backprop(self, delta, eta):
+        # Calculate the delta for the next layer
+        # Must be done before weight update
+        new_delta = np.dot(self.weights.T, delta)
+
+        # Calculate weight update
+        weight_update = eta * np.dot(delta, self.input_values.T)
+
+        self.update_weights(weight_update)
+
+        return new_delta
 
 
 class TanhLayer(LayerBase):
