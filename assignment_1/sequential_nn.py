@@ -2,7 +2,7 @@ import logging
 
 import numpy as np
 
-from layers import TanhLayer
+from layers import TanhLayer, ReluLayer
 
 
 class SequentialNeuralNet():
@@ -24,6 +24,9 @@ class SequentialNeuralNet():
 
         if(activation_function == "tanh"):
             layer = TanhLayer(previous_units, units)
+
+        elif(activation_function == "relu"):
+            layer = ReluLayer(previous_units, units)
 
         # Add layer to the list
         self.layers.append(layer)
