@@ -3,7 +3,8 @@ import numpy as np
 from activations import (
     hyperbolic_tangent, hyperbolic_tangent_derivative,
     relu, relu_derivative,
-    sigmoid_function, sigmoid_function_derivative
+    sigmoid_function, sigmoid_function_derivative,
+    softmax_function
 )
 
 
@@ -110,3 +111,9 @@ class LinearLayer(LinearBackprop, LayerBase):
         super().__init__(*args)
         # Return the input as without modification
         self.activation_function = lambda x: x
+
+
+class SoftmaxLayer(LinearBackprop, LayerBase):
+    def __init__(self, *args):
+        super().__init__(*args)
+        self.activation_function = softmax_function

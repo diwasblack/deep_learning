@@ -2,7 +2,9 @@ import logging
 
 import numpy as np
 
-from layers import TanhLayer, ReluLayer, LinearLayer, SigmoidLayer
+from layers import (
+    TanhLayer, ReluLayer, LinearLayer, SigmoidLayer, SoftmaxLayer
+)
 
 
 class SequentialNeuralNet():
@@ -16,7 +18,7 @@ class SequentialNeuralNet():
         self.input_dimension = input_dimension
         self.learning_rate = None
 
-    def add_layer(self, activation_function="tanh", units=64, use_softmax=False):
+    def add_layer(self, activation_function="tanh", units=64):
         if(not(self.layers)):
             previous_units = self.input_dimension
         else:
@@ -33,6 +35,9 @@ class SequentialNeuralNet():
 
         elif(activation_function == "linear"):
             layer = LinearLayer(previous_units, units)
+
+        elif(activation_function == "softmax"):
+            layer = SoftmaxLayer(previous_units, units)
 
         # Add layer to the list
         self.layers.append(layer)

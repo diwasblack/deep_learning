@@ -34,3 +34,15 @@ def relu_derivative(x):
     x_derivative[x <= 0] = 0
     x_derivative[x > 0] = 1
     return x_derivative
+
+
+def softmax_function(x):
+    """
+    Implementation for softmax function
+
+    See:
+    http://cs231n.github.io/linear-classify/#softmax
+    """
+
+    e_x = np.exp(x - np.max(x))
+    return e_x / e_x.sum(axis=0)
