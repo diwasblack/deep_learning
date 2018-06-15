@@ -2,7 +2,7 @@ import logging
 
 import numpy as np
 
-from layers import TanhLayer, ReluLayer, LinearLayer
+from layers import TanhLayer, ReluLayer, LinearLayer, SigmoidLayer
 
 
 class SequentialNeuralNet():
@@ -27,6 +27,9 @@ class SequentialNeuralNet():
 
         elif(activation_function == "relu"):
             layer = ReluLayer(previous_units, units)
+
+        elif(activation_function == "sigmoid"):
+            layer = SigmoidLayer(previous_units, units)
 
         elif(activation_function == "linear"):
             layer = LinearLayer(previous_units, units)

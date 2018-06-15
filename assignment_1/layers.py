@@ -2,7 +2,8 @@ import numpy as np
 
 from activations import (
     hyperbolic_tangent, hyperbolic_tangent_derivative,
-    relu, relu_derivative
+    relu, relu_derivative,
+    sigmoid_function, sigmoid_function_derivative
 )
 
 
@@ -89,6 +90,14 @@ class ReluLayer(NonLinearBackprop, LayerBase):
         # Assign relu function to be the activation function
         self.activation_function = relu
         self.activation_function_derivative = relu_derivative
+
+
+class SigmoidLayer(NonLinearBackprop, LayerBase):
+    def __init__(self, *args):
+        super().__init__(*args)
+        # Assign sigmoid function to be the activation function
+        self.activation_function = sigmoid_function
+        self.activation_function_derivative = sigmoid_function_derivative
 
 
 class LinearBackprop():
