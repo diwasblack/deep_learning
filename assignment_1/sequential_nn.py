@@ -6,6 +6,8 @@ from layers import (
     TanhLayer, ReluLayer, LinearLayer, SigmoidLayer, SoftmaxLayer
 )
 
+from loss_functions import mean_squared_error
+
 
 class SequentialNeuralNet():
     """
@@ -17,6 +19,8 @@ class SequentialNeuralNet():
         self.layers = []
         self.input_dimension = input_dimension
         self.learning_rate = None
+
+        self.loss_function = None
 
     def add_layer(self, activation_function="tanh", units=64):
         if(not(self.layers)):
@@ -42,13 +46,17 @@ class SequentialNeuralNet():
         # Add layer to the list
         self.layers.append(layer)
 
-    def compile(self, learning_rate=0.001, error_threshold=0.001):
+    def compile(self, loss="mean_squared_error", learning_rate=0.001,
+                error_threshold=0.001):
         self.output_dimension = self.layers[-1].output_units
         self.learning_rate = learning_rate
 
         self.error_threshold = error_threshold
 
         self.number_of_layers = len(self.layers)
+
+        if(loss == "mean_squared_error"):
+            self.loss_function = mean_squared_error
 
     def forward_pass(self, input_matrix):
         output = np.copy(input_matrix)
@@ -73,8 +81,8 @@ class SequentialNeuralNet():
 
             delta = predicted_output - target_matrix
 
-            # Calculate the loss
-            loss = np.linalg.norm(delta)
+            # Calculate the loss occured
+            loss = self.loss_function(target_matrix, predicted_output)
 
             if(loss < self.error_threshold):
                 break
