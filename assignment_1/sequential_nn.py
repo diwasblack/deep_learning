@@ -61,11 +61,7 @@ class SequentialNeuralNet():
         """
         Propagate delta through the layers
         """
-        for layer_index in range(self.number_of_layers-1, -1, -1):
-
-            # Access layer object
-            layer = self.layers[layer_index]
-
+        for layer in reversed(self.layers):
             # Propagate delta through layers
             delta = layer.backprop(delta, self.learning_rate)
 
