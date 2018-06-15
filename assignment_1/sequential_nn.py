@@ -85,7 +85,9 @@ class SequentialNeuralNet():
             # Propagate the input forward
             predicted_output = self.forward_pass(input_matrix)
 
-            delta = predicted_output - target_matrix
+            # Calculate delta at the final layer
+            delta = self.loss_function_derivative(
+                predicted_output, target_matrix)
 
             # Calculate the loss occured
             loss = self.loss_function(predicted_output, target_matrix)
