@@ -6,7 +6,7 @@ from layers import (
     TanhLayer, ReluLayer, LinearLayer, SigmoidLayer, SoftmaxLayer
 )
 
-from loss_functions import mean_squared_error
+from loss_functions import mean_squared_error, cross_entropy
 
 
 class SequentialNeuralNet():
@@ -57,6 +57,11 @@ class SequentialNeuralNet():
 
         if(loss == "mean_squared_error"):
             self.loss_function = mean_squared_error
+            self.loss_function_derivative = lambda x, y: x - y
+
+        if(loss == "cross_entropy"):
+            self.loss_function = cross_entropy
+            self.loss_function_derivative = lambda x, y: x - y
 
     def forward_pass(self, input_matrix):
         output = np.copy(input_matrix)
@@ -75,6 +80,7 @@ class SequentialNeuralNet():
 
     def train(self, input_matrix, target_matrix):
         number_of_iterations = 0
+
         while(True):
             # Propagate the input forward
             predicted_output = self.forward_pass(input_matrix)
@@ -82,13 +88,13 @@ class SequentialNeuralNet():
             delta = predicted_output - target_matrix
 
             # Calculate the loss occured
-            loss = self.loss_function(target_matrix, predicted_output)
-
-            if(loss < self.error_threshold):
-                break
+            loss = self.loss_function(predicted_output, target_matrix)
 
             if(number_of_iterations % 1000 == 0):
                 logging.info("Cost: {}".format(loss))
+
+            if(loss < self.error_threshold):
+                break
 
             # Update weights using backpropagation
             self.backpropagation(delta)
