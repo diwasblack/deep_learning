@@ -17,11 +17,10 @@ class CIFAR10NN():
 
     def construct_nn(self):
         self.nn = NeuralNet(layers_filename=self.layers_filename)
-        self.nn.add_layer(units=64, activation_function="tanh",
+        self.nn.add_layer(units=128, activation_function="tanh",
                           input_dimension=self.input_data_dimension)
-        self.nn.add_layer(units=64, activation_function="tanh")
-        self.nn.add_layer(units=64, activation_function="tanh")
-        self.nn.add_layer(units=64, activation_function="tanh")
+        self.nn.add_layer(units=128, activation_function="tanh")
+        self.nn.add_layer(units=128, activation_function="tanh")
         self.nn.add_layer(units=self.output_data_dimension,
                           activation_function="softmax")
         self.nn.compile(loss="cross_entropy",
