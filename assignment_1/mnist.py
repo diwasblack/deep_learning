@@ -15,6 +15,12 @@ class MNISTNN():
         self.layers_filename = "mnist_nn_layers.pkl"
         self.test_data_filename = "mnist_test_data.pkl"
 
+        self.mnist_logger = logging.getLogger("mnist")
+        self.mnist_logger.setLevel(logging.INFO)
+
+        fh = logging.FileHandler("mnist_training.log")
+        self.mnist_logger.addHandler(fh)
+
     def construct_nn(self):
         self.nn = NeuralNet()
         self.nn.add_layer(units=32, activation_function="tanh",
@@ -32,7 +38,8 @@ class MNISTNN():
 
         self.nn.train(train_data, train_targets,
                       logging_frequency=10, weight_backup_frequency=100,
-                      layers_filename=self.layers_filename)
+                      layers_filename=self.layers_filename,
+                      training_logger=self.mnist_logger)
 
     def train_and_test(self, x_train, y_train, x_test, y_test):
         """
