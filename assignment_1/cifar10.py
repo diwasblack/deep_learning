@@ -12,8 +12,21 @@ class CIFAR10NN():
         self.nn = None
         self.input_data_dimension = 32 * 32 * 3
         self.output_data_dimension = 10
+
+        self.learning_rate = 1e-7
+        self.error_threshold = 0.1
+
+        self.logging_frequency = 1
+        self.weight_backup_frequency = 100
+
         self.layers_filename = "cifar10_nn_layers.pkl"
         self.test_data_filename = "cifar10_test_data.pkl"
+
+        self.cifar10_logger = logging.getLogger("cifar10")
+        self.cifar10_logger.setLevel(logging.INFO)
+
+        fh = logging.FileHandler("cifar10_training.log")
+        self.cifar10_logger.addHandler(fh)
 
     def construct_nn(self):
         self.nn = NeuralNet()
@@ -24,15 +37,18 @@ class CIFAR10NN():
         self.nn.add_layer(units=self.output_data_dimension,
                           activation_function="softmax")
         self.nn.compile(loss="cross_entropy",
-                        error_threshold=0.1, learning_rate=1e-7)
+                        error_threshold=self.error_threshold,
+                        learning_rate=self.learning_rate)
 
     def train(self, train_data, train_labels):
         # Convert target to one hot encoding vectors
         train_targets = one_hot_encoding(train_labels)
 
         self.nn.train(train_data, train_targets,
-                      logging_frequency=1, weight_backup_frequency=100,
-                      layers_filename=self.layers_filename)
+                      logging_frequency=self.logging_frequency,
+                      weight_backup_frequency=self.weight_backup_frequency,
+                      layers_filename=self.layers_filename,
+                      training_logger=self.cifar10_logger)
 
     def train_and_test(self, x_train, y_train, x_test, y_test):
         """
