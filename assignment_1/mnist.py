@@ -12,6 +12,13 @@ class MNISTNN():
         self.nn = None
         self.input_data_dimension = 784
         self.output_data_dimension = 10
+
+        self.learning_rate = 1e-5
+        self.error_threshold = 0.1
+
+        self.logging_frequency = 10
+        self.weight_backup_frequency = 100
+
         self.layers_filename = "mnist_nn_layers.pkl"
         self.test_data_filename = "mnist_test_data.pkl"
 
@@ -30,14 +37,16 @@ class MNISTNN():
         self.nn.add_layer(units=self.output_data_dimension,
                           activation_function="softmax")
         self.nn.compile(loss="cross_entropy",
-                        error_threshold=0.1, learning_rate=1e-5)
+                        error_threshold=self.error_threshold,
+                        learning_rate=self.learning_rate)
 
     def train(self, train_data, train_labels):
         # Convert target to one hot encoding vectors
         train_targets = one_hot_encoding(train_labels)
 
         self.nn.train(train_data, train_targets,
-                      logging_frequency=10, weight_backup_frequency=100,
+                      logging_frequency=self.logging_frequency,
+                      weight_backup_frequency=self.weight_backup_frequency,
                       layers_filename=self.layers_filename,
                       training_logger=self.mnist_logger)
 
