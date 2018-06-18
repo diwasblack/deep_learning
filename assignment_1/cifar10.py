@@ -16,7 +16,7 @@ class CIFAR10NN():
         self.test_data_filename = "cifar10_test_data.pkl"
 
     def construct_nn(self):
-        self.nn = NeuralNet(layers_filename=self.layers_filename)
+        self.nn = NeuralNet()
         self.nn.add_layer(units=128, activation_function="tanh",
                           input_dimension=self.input_data_dimension)
         self.nn.add_layer(units=128, activation_function="tanh")
@@ -31,7 +31,8 @@ class CIFAR10NN():
         train_targets = one_hot_encoding(train_labels)
 
         self.nn.train(train_data, train_targets,
-                      logging_frequency=1, weight_backup_frequency=100)
+                      logging_frequency=1, weight_backup_frequency=100,
+                      layers_filename=self.layers_filename)
 
     def train_and_test(self, x_train, y_train, x_test, y_test):
         """
@@ -70,8 +71,8 @@ class CIFAR10NN():
         return categorical_accuracy(predicted_output, target_output)
 
     def load_pretrained_network(self):
-        self.nn = NeuralNet(layers_filename=self.layers_filename)
-        self.nn.load_layer_weights()
+        self.nn = NeuralNet()
+        self.nn.load_layer_weights(self.layers_filename)
 
     def predict(self, input_matrix):
         predicted_output = self.nn.predict(input_matrix)
