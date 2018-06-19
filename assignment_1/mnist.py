@@ -16,9 +16,10 @@ class MNISTNN():
 
         self.learning_rate = 1e-5
         self.error_threshold = 0.1
+        self.learning_rate_decay = 0.9
 
         self.logging_frequency = 10
-        self.weight_backup_frequency = 100
+        self.update_frequency = 100
 
         self.layers_filename = "mnist_nn_layers.pkl"
         self.test_data_filename = "mnist_test_data.pkl"
@@ -31,7 +32,7 @@ class MNISTNN():
 
     def construct_nn(self):
         # First construct an optimizer to use
-        optimizer = SGD(lr=self.learning_rate)
+        optimizer = SGD(lr=self.learning_rate, decay=self.learning_rate_decay)
 
         self.nn = NeuralNet()
         self.nn.add_layer(units=32, activation_function="tanh",
@@ -50,7 +51,7 @@ class MNISTNN():
 
         self.nn.train(train_data, train_targets,
                       logging_frequency=self.logging_frequency,
-                      weight_backup_frequency=self.weight_backup_frequency,
+                      update_frequency=self.update_frequency,
                       layers_filename=self.layers_filename,
                       training_logger=self.mnist_logger)
 
