@@ -5,6 +5,7 @@ import logging
 from depth.sequential import NeuralNet
 from depth.helpers import one_hot_encoding, vector_to_label
 from depth.metrics import categorical_accuracy
+from depth.optimizers import SGD
 
 
 class MNISTNN():
@@ -29,16 +30,19 @@ class MNISTNN():
         self.mnist_logger.addHandler(fh)
 
     def construct_nn(self):
+        # First construct an optimizer to use
+        optimizer = SGD(lr=self.learning_rate)
+
         self.nn = NeuralNet()
         self.nn.add_layer(units=32, activation_function="tanh",
                           input_dimension=self.input_data_dimension)
-        self.nn.add_layer(units=32, activation_function="tanh")
+        self.nn.add_layer(units=32, activation_function="relu")
         self.nn.add_layer(units=32, activation_function="tanh")
         self.nn.add_layer(units=self.output_data_dimension,
                           activation_function="softmax")
         self.nn.compile(loss="cross_entropy",
                         error_threshold=self.error_threshold,
-                        learning_rate=self.learning_rate)
+                        optimizer=optimizer)
 
     def train(self, train_data, train_labels):
         # Convert target to one hot encoding vectors
