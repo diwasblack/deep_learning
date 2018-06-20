@@ -21,7 +21,9 @@ def train_mnist():
 
     # Train network for CIFAR 10 data
     cifar10_nn.construct_nn()
-    accuracy = cifar10_nn.train_and_test(x_train, y_train, x_test, y_test)
+    cifar10_nn.store_test_data(x_test, y_test)
+    cifar10_nn.train(x_train, y_train)
+    accuracy = cifar10_nn.evaluate_performance(x_test, y_test)
     print("Accuracy :{}".format(accuracy))
 
 

@@ -46,6 +46,10 @@ class MNISTNN():
                         optimizer=optimizer)
 
     def train(self, train_data, train_labels):
+        """
+        Train the neural network constructed
+        """
+
         # Convert target to one hot encoding vectors
         train_targets = one_hot_encoding(train_labels)
 
@@ -55,9 +59,9 @@ class MNISTNN():
                       layers_filename=self.layers_filename,
                       training_logger=self.mnist_logger)
 
-    def train_and_test(self, x_train, y_train, x_test, y_test):
+    def store_test_data(self, x_test, y_test):
         """
-        Class method to train and test the neural network for MNIST dataset
+        Store the test data in a file
         """
         # Store the test data on a file
         logging.info("Storing test data")
@@ -66,11 +70,6 @@ class MNISTNN():
             pickle.dump((x_test, y_test), file)
 
         logging.info("Test data saved")
-
-        # Train the neural network
-        self.train(x_train, y_train)
-
-        return self.evaluate_performance(x_test, y_test)
 
     def load_test_data(self):
         """

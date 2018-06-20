@@ -24,7 +24,9 @@ def train_mnist():
 
     # Train network for mnist data
     mnist_nn.construct_nn()
-    accuracy = mnist_nn.train_and_test(x_train, y_train, x_test, y_test)
+    mnist_nn.store_test_data(x_test, y_test)
+    mnist_nn.train(x_train, y_train)
+    accuracy = mnist_nn.evaluate_performance(x_test, y_test)
     print("Accuracy :{}".format(accuracy))
 
 
