@@ -58,7 +58,7 @@ class MNISTNN():
                       layers_filename=self.layers_filename,
                       training_logger=self.mnist_logger)
 
-    def store_test_data(self, x_test, y_test):
+    def store_test_data(self, x_test, y_test, training_mean):
         """
         Store the test data in a file
         """
@@ -66,7 +66,7 @@ class MNISTNN():
         logging.info("Storing test data")
 
         with gzip.open(self.test_data_filename, "wb") as file:
-            pickle.dump((x_test, y_test), file)
+            pickle.dump((x_test, y_test, training_mean), file)
 
         logging.info("Test data saved")
 
@@ -75,9 +75,9 @@ class MNISTNN():
         Load test data from pickle file
         """
         with gzip.open(self.test_data_filename, "rb") as file:
-            x_test, y_test = pickle.load(file)
+            x_test, y_test, training_mean = pickle.load(file)
 
-        return x_test, y_test
+        return x_test, y_test, training_mean
 
     def evaluate_performance(self, x_test, y_test):
         """
