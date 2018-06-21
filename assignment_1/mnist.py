@@ -14,8 +14,8 @@ class MNISTNN():
         self.input_data_dimension = 784
         self.output_data_dimension = 10
 
-        self.learning_rate = 1e-6
-        self.error_threshold = 0.1
+        self.learning_rate = 5e-1
+        self.error_threshold = 0.8
 
         self.logging_frequency = 10
         self.update_frequency = 100
