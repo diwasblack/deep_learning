@@ -14,7 +14,7 @@ class CIFAR10NN():
         self.input_data_dimension = 32 * 32 * 3
         self.output_data_dimension = 10
 
-        self.learning_rate = 1e-7
+        self.learning_rate = 5e-1
         self.error_threshold = 0.1
 
         self.logging_frequency = 1
