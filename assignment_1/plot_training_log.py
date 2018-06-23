@@ -39,7 +39,7 @@ def generate_plots(filepath):
     iterations, losses, accuracies = load_data(filepath)
 
     plt.plot(iterations, losses)
-    plt.xlabel("Iteration")
+    plt.xlabel("Epoch")
     plt.ylabel("Loss")
 
     output_path = os.path.join(head, "{}_loss.png".format(filename))
@@ -47,7 +47,7 @@ def generate_plots(filepath):
 
     plt.clf()
     plt.plot(iterations, accuracies)
-    plt.xlabel("Iteration")
+    plt.xlabel("Epoch")
     plt.ylabel("Accuracy")
 
     output_path = os.path.join(head, "{}_accuracy.png".format(filename))
