@@ -1,0 +1,159 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{float}
+
+\title{Assignment for CS 696-04 \\ (Deep Learning)}
+\author{Diwas Sharma}
+\date{\today}
+\begin{document}
+
+\maketitle
+\newpage
+
+\section{Design}
+The code that is used to construct and train the Neural network is highly modular and
+can be used as a library for other programs. The interface is quite similar to the one
+provided by keras \footnote{\url{https://keras.io/}}.
+
+The code enable the user to construct a neural network with any number of dense
+layers. And, supports activation functions such as sigmoid, hyperbolic tangent,
+ReLu, Leaky ReLu, and linear. An example of a neural network that can be construct
+using the code is given below.
+
+\begin{lstlisting}[language=python]
+from depth.sequential import NeuralNet
+
+nn_object = NeuralNet()
+nn_object.add_layer(units=32, activation_function="relu",
+                    input_dimension=10)
+nn_object.add_layer(units=32, activation_function="tanh")
+nn_object.add_layer(units=32, activation_function="sigmoid")
+\end{lstlisting}
+
+It also provides a choice between cross entropy loss and mean squared
+error to be used as a loss function for the output layer.
+
+\section{MNIST dataset}
+\subsection{Network}
+The network consists of 3 hidden layers each with 32 neurons.  The first and the last
+hidden layer uses hyperbolic tangent as the activation function. And the second
+hidden layer uses the ReLu function as the activation function. The output layer
+is a hyperbolic tangent layer with 10 neurons with softmax output.
+
+As the MNIST dataset is a multiclass classification problem, the cross entropy function
+is used as the loss function along with gradient descent optimization for adjusting
+parameters.
+
+\subsubsection{Source Code}
+\begin{lstlisting}[language=python]
+self.nn = NeuralNet()
+self.nn.add_layer(units=32, activation_function="tanh",
+                    input_dimension=self.input_data_dimension)
+self.nn.add_layer(units=32, activation_function="relu")
+self.nn.add_layer(units=32, activation_function="tanh")
+self.nn.add_layer(units=self.output_data_dimension,
+                    activation_function="tanh")
+self.nn.compile(loss="cross_entropy",
+                error_threshold=self.error_threshold,
+                optimizer=optimizer)
+\end{lstlisting}
+
+\subsection{Training}
+At first a learning rate of $\eta = 0.001$ was chosen as a starting point
+to observe the performance of the network. The plot in figure \ref{fig:mnist_three_loss} shows
+the loss function at the end of each epoch during the training. Similarly, figure \ref{fig:mnist_three_accuracy} shows the
+training accuracy at the end of every epoch.
+
+\begin{figure}[!ht]
+  \includegraphics[width=\textwidth,height=0.35\textheight,keepaspectratio]{m1e-3_loss.png}
+  \caption{Training loss for $\eta = 0.001$}
+  \label{fig:mnist_three_loss}
+\end{figure}
+
+\begin{figure}[!ht]
+  \includegraphics[width=\textwidth,height=0.35\textheight,keepaspectratio]{m1e-3_accuracy.png}
+  \caption{Training accuracy for $\eta = 0.001$}
+  \label{fig:mnist_three_accuracy}
+\end{figure}
+
+It is clear from the plots that the learning rate of $0.001$ is too small for training the network. A
+significant improvement can be seen in the training performance if the learning rate is increased to $\eta = 0.5$.
+The performance of network for the increased learning rate is show in figures \ref{fig:mnist_one_loss} and \ref{fig:mnist_one_accuracy}.
+
+\begin{figure}[!ht]
+  \includegraphics[width=\textwidth,height=0.35\textheight,keepaspectratio]{m5e-1_loss.png}
+  \caption{Training loss for $\eta = 0.5$}
+  \label{fig:mnist_one_loss}
+\end{figure}
+
+\begin{figure}[!ht]
+  \includegraphics[width=\textwidth,height=0.35\textheight,keepaspectratio]{m5e-1_accuracy.png}
+  \caption{Training accuracy for $\eta = 0.5$}
+  \label{fig:mnist_one_accuracy}
+\end{figure}
+
+\subsection{Testing}
+The accuracy obtained for the network on the test data is 0.88584.
+
+\section {CIFAR-10 dataset}
+\subsection{Network}
+The network consists of 3 hidden layers each with 128 neurons.  The first and the last
+hidden layer uses hyperbolic tangent as the activation function. And the second
+hidden layer uses the ReLu function as the activation function. The output layer is
+a hyperbolic tangent layer with 10 neurons with softmax output.
+
+The loss function used is cross entropy loss and gradient descent is used for
+optimizing the parameters.
+
+\subsubsection{Source Code}
+\begin{lstlisting}[language=python]
+self.nn = NeuralNet()
+self.nn = NeuralNet()
+self.nn.add_layer(units=128, activation_function="tanh",
+                    input_dimension=self.input_data_dimension)
+self.nn.add_layer(units=128, activation_function="relu")
+self.nn.add_layer(units=128, activation_function="tanh")
+self.nn.add_layer(units=self.output_data_dimension,
+                    activation_function="tanh")
+self.nn.compile(loss="cross_entropy",
+                error_threshold=self.error_threshold,
+                optimizer=optimizer)
+\end{lstlisting}
+
+\subsection{Training}
+The performance of the network for a learning rate of $\eta = 0.001$ is shown in figures
+\ref{fig:cifar_three_loss} and \ref{fig:cifar_three_accuracy}.
+
+\begin{figure}[H]
+  \includegraphics[width=\textwidth,height=0.35\textheight,keepaspectratio]{c1e-3_loss.png}
+  \caption{Training loss for $\eta = 0.001$}
+  \label{fig:cifar_three_loss}
+\end{figure}
+
+\begin{figure}[H]
+  \includegraphics[width=\textwidth,height=0.35\textheight,keepaspectratio]{c1e-3_accuracy.png}
+  \caption{Training accuracy for $\eta = 0.001$}
+  \label{fig:cifar_three_accuracy}
+\end{figure}
+
+Increasing the learning rate to $\eta = 0.5$ yields the training performance shown in figures
+\ref{fig:cifar_one_loss} and \ref{fig:cifar_one_accuracy}
+
+\begin{figure}[!ht]
+  \includegraphics[width=\textwidth,height=0.35\textheight,keepaspectratio]{c5e-1_loss.png}
+  \caption{Training loss for $\eta = 0.5$}
+  \label{fig:cifar_one_loss}
+\end{figure}
+
+\begin{figure}[!ht]
+  \includegraphics[width=\textwidth,height=0.35\textheight,keepaspectratio]{c5e-1_accuracy.png}
+  \caption{Training accuracy for $\eta = 0.5$}
+  \label{fig:cifar_one_accuracy}
+\end{figure}
+
+\subsection{Testing}
+The accuracy obtained for the network on the test data is 0.282.
+
+\end{document}
