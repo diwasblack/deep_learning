@@ -16,6 +16,7 @@ class CIFAR10NN():
 
         self.learning_rate = 5e-1
         self.error_threshold = 0.1
+        self.momentum = 0.9
 
         self.logging_frequency = 1
         self.update_frequency = 100
@@ -31,7 +32,7 @@ class CIFAR10NN():
 
     def construct_nn(self):
         # First construct an optimizer to use
-        optimizer = SGD(lr=self.learning_rate)
+        optimizer = SGD(lr=self.learning_rate, momentum=self.momentum)
 
         self.nn = NeuralNet()
         self.nn.add_layer(units=128, activation_function="tanh",
