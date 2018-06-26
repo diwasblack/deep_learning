@@ -23,6 +23,32 @@ ReLu, Leaky ReLu, and linear. An example of a neural network that can be constru
 using the code is given below.
 
 \begin{lstlisting}[language=python]
+from depth.sequential import NeuralNet
+
+nn_object = NeuralNet()
+nn_object.add_layer(units=32, activation_function="relu",
+                    input_dimension=10)
+nn_object.add_layer(units=32, activation_function="tanh")
+nn_object.add_layer(units=32, activation_function="sigmoid")
+
+\end{lstlisting}
+
+It also provides a choice between cross entropy loss and mean squared
+error to be used as a loss function for the output layer.
+
+\section{MNIST dataset}
+\subsection{Network}
+The network consists of 3 hidden layers each with 32 neurons.  The first and the last
+hidden layer uses hyperbolic tangent as the activation function. And the second
+hidden layer uses the ReLu function as the activation function. The output layer
+is a hyperbolic tangent layer with 10 neurons with softmax output.
+
+As the MNIST dataset is a multiclass classification problem, the cross entropy function
+is used as the loss function along with gradient descent optimization for adjusting
+parameters.
+
+\subsubsection{Source Code}
+\begin{lstlisting}[language=python]
 # First construct an optimizer to use
 optimizer = SGD(lr=self.learning_rate, momentum=self.momentum)
 
@@ -44,44 +70,17 @@ self.nn.compile(loss="cross_entropy",
                 optimizer=optimizer)
 \end{lstlisting}
 
-It also provides a choice between cross entropy loss and mean squared
-error to be used as a loss function for the output layer.
-
-\section{MNIST dataset}
-\subsection{Network}
-The network consists of 3 hidden layers each with 32 neurons.  The first and the last
-hidden layer uses hyperbolic tangent as the activation function. And the second
-hidden layer uses the ReLu function as the activation function. The output layer
-is a hyperbolic tangent layer with 10 neurons with softmax output.
-
-As the MNIST dataset is a multiclass classification problem, the cross entropy function
-is used as the loss function along with gradient descent optimization for adjusting
-parameters.
-
-\subsubsection{Source Code}
-\begin{lstlisting}[language=python]
-self.nn = NeuralNet()
-self.nn.add_layer(units=32, activation_function="tanh",
-                    input_dimension=self.input_data_dimension)
-self.nn.add_layer(units=32, activation_function="relu")
-self.nn.add_layer(units=32, activation_function="tanh")
-self.nn.add_layer(units=self.output_data_dimension,
-                    activation_function="tanh")
-self.nn.compile(loss="cross_entropy",
-                error_threshold=self.error_threshold,
-                optimizer=optimizer)
-\end{lstlisting}
-
 \subsection{Training}
 At first a learning rate of $\eta = 0.001$ was chosen as a starting point
 to observe the performance of the network. The training was done using gradient
-descent algorithm with momentum where momentum coefficient$(\gamma) = 0.9$.  The plot in figure \ref{fig:mnist_three_loss} shows
+descent algorithm with momentum where the hyperparameters were selected as
+momentum coefficient$(\gamma) = 0.9$ and regularization coefficient$(\lambda)=0.01$.  The plot in figure \ref{fig:mnist_three_loss} shows
 the regularized loss function at the end of each epoch during the training. Similarly, figure \ref{fig:mnist_three_accuracy} shows the
 training accuracy at the end of every epoch.
 
 \begin{figure}[!ht]
   \includegraphics[width=\textwidth,height=0.35\textheight,keepaspectratio]{m1e-3_m_loss.png}
-  \caption{Regularized training loss for $\eta = 0.001, \gamma = 0.9$}
+  \caption{Regularized training loss for $\eta = 0.001, \gamma = 0.9, \lambda=0.01$}
   \label{fig:mnist_three_loss}
 \end{figure}
 
