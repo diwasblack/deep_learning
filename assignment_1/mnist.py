@@ -6,6 +6,7 @@ from depth.sequential import NeuralNet
 from depth.helpers import one_hot_encoding, vector_to_label
 from depth.metrics import categorical_accuracy
 from depth.optimizers import SGD
+from depth.regularizers import L2Regularizer
 
 
 class MNISTNN():
@@ -17,6 +18,7 @@ class MNISTNN():
         self.learning_rate = 5e-1
         self.error_threshold = 0.8
         self.momentum = 0.9
+        self.regularization_coefficient = 0.01
 
         self.logging_frequency = 10
         self.update_frequency = 100
@@ -34,13 +36,19 @@ class MNISTNN():
         # First construct an optimizer to use
         optimizer = SGD(lr=self.learning_rate, momentum=self.momentum)
 
+        # Create L2 regularizer
+        regularizer = L2Regularizer(self.regularization_coefficient)
+
         self.nn = NeuralNet()
         self.nn.add_layer(units=32, activation_function="tanh",
-                          input_dimension=self.input_data_dimension)
-        self.nn.add_layer(units=32, activation_function="relu")
-        self.nn.add_layer(units=32, activation_function="tanh")
+                          input_dimension=self.input_data_dimension,
+                          regularizer=regularizer)
+        self.nn.add_layer(units=32, activation_function="relu",
+                          regularizer=regularizer)
+        self.nn.add_layer(units=32, activation_function="tanh",
+                          regularizer=regularizer)
         self.nn.add_layer(units=self.output_data_dimension,
-                          activation_function="tanh")
+                          activation_function="tanh", regularizer=regularizer)
         self.nn.compile(loss="cross_entropy",
                         error_threshold=self.error_threshold,
                         optimizer=optimizer)
