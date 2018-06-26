@@ -23,13 +23,25 @@ ReLu, Leaky ReLu, and linear. An example of a neural network that can be constru
 using the code is given below.
 
 \begin{lstlisting}[language=python]
-from depth.sequential import NeuralNet
+# First construct an optimizer to use
+optimizer = SGD(lr=self.learning_rate, momentum=self.momentum)
 
-nn_object = NeuralNet()
-nn_object.add_layer(units=32, activation_function="relu",
-                    input_dimension=10)
-nn_object.add_layer(units=32, activation_function="tanh")
-nn_object.add_layer(units=32, activation_function="sigmoid")
+# Create L2 regularizer
+regularizer = L2Regularizer(self.regularization_coefficient)
+
+self.nn = NeuralNet()
+self.nn.add_layer(units=32, activation_function="tanh",
+                    input_dimension=self.input_data_dimension,
+                    regularizer=regularizer)
+self.nn.add_layer(units=32, activation_function="relu",
+                    regularizer=regularizer)
+self.nn.add_layer(units=32, activation_function="tanh",
+                    regularizer=regularizer)
+self.nn.add_layer(units=self.output_data_dimension,
+                    activation_function="tanh", regularizer=regularizer)
+self.nn.compile(loss="cross_entropy",
+                error_threshold=self.error_threshold,
+                optimizer=optimizer)
 \end{lstlisting}
 
 It also provides a choice between cross entropy loss and mean squared
@@ -110,7 +122,6 @@ optimizing the parameters.
 
 \subsubsection{Source Code}
 \begin{lstlisting}[language=python]
-self.nn = NeuralNet()
 self.nn = NeuralNet()
 self.nn.add_layer(units=128, activation_function="tanh",
                     input_dimension=self.input_data_dimension)
