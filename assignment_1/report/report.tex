@@ -96,7 +96,7 @@ The performance of network for the increased learning rate is show in figures \r
 
 \begin{figure}[!ht]
   \includegraphics[width=\textwidth,height=0.35\textheight,keepaspectratio]{m5e-1_m_loss.png}
-  \caption{Regularized training loss for $\eta = 0.5, \gamma = 0.9$}
+  \caption{Regularized training loss for $\eta = 0.5, \gamma = 0.9, \lambda=0.01$}
   \label{fig:mnist_one_loss}
 \end{figure}
 
@@ -121,13 +121,22 @@ optimizing the parameters.
 
 \subsubsection{Source Code}
 \begin{lstlisting}[language=python]
+# First construct an optimizer to use
+optimizer = SGD(lr=self.learning_rate, momentum=self.momentum)
+
+# Create L2 regularizer
+regularizer = L2Regularizer(self.regularization_coefficient)
+
 self.nn = NeuralNet()
+self.nn.add_layer(
+    units=128, activation_function="tanh",
+    input_dimension=self.input_data_dimension, regularizer=regularizer)
+self.nn.add_layer(units=128, activation_function="relu",
+                    regularizer=regularizer)
 self.nn.add_layer(units=128, activation_function="tanh",
-                    input_dimension=self.input_data_dimension)
-self.nn.add_layer(units=128, activation_function="relu")
-self.nn.add_layer(units=128, activation_function="tanh")
+                    regularizer=regularizer)
 self.nn.add_layer(units=self.output_data_dimension,
-                    activation_function="tanh")
+                    activation_function="tanh", regularizer=regularizer)
 self.nn.compile(loss="cross_entropy",
                 error_threshold=self.error_threshold,
                 optimizer=optimizer)
@@ -138,13 +147,13 @@ The performance of the network for a learning rate of $\eta = 0.001$ is shown in
 \ref{fig:cifar_three_loss} and \ref{fig:cifar_three_accuracy}.
 
 \begin{figure}[!ht]
-  \includegraphics[width=\textwidth,height=0.35\textheight,keepaspectratio]{c1e-3_loss.png}
-  \caption{Training loss for $\eta = 0.001$}
+  \includegraphics[width=\textwidth,height=0.35\textheight,keepaspectratio]{c1e-3_m_loss.png}
+  \caption{Regularized training loss for $\eta = 0.001, \gamma = 0.9, \lambda=0.01$}
   \label{fig:cifar_three_loss}
 \end{figure}
 
 \begin{figure}[!ht]
-  \includegraphics[width=\textwidth,height=0.35\textheight,keepaspectratio]{c1e-3_accuracy.png}
+  \includegraphics[width=\textwidth,height=0.35\textheight,keepaspectratio]{c1e-3_m_accuracy.png}
   \caption{Training accuracy for $\eta = 0.001$}
   \label{fig:cifar_three_accuracy}
 \end{figure}
@@ -153,18 +162,18 @@ Increasing the learning rate to $\eta = 0.5$ yields the training performance sho
 \ref{fig:cifar_one_loss} and \ref{fig:cifar_one_accuracy}
 
 \begin{figure}[!ht]
-  \includegraphics[width=\textwidth,height=0.35\textheight,keepaspectratio]{c5e-1_loss.png}
-  \caption{Training loss for $\eta = 0.5$}
+  \includegraphics[width=\textwidth,height=0.35\textheight,keepaspectratio]{c5e-1_m_loss.png}
+  \caption{Regularized training loss for $\eta = 0.5, \gamma = 0.9, \lambda=0.01$}
   \label{fig:cifar_one_loss}
 \end{figure}
 
 \begin{figure}[!ht]
-  \includegraphics[width=\textwidth,height=0.35\textheight,keepaspectratio]{c5e-1_accuracy.png}
+  \includegraphics[width=\textwidth,height=0.35\textheight,keepaspectratio]{c5e-1_m_accuracy.png}
   \caption{Training accuracy for $\eta = 0.5$}
   \label{fig:cifar_one_accuracy}
 \end{figure}
 
 \subsection{Testing}
-The accuracy obtained for the network on the test data is 0.282.
+The accuracy obtained for the network on the test data is 0.403.
 
 \end{document}
