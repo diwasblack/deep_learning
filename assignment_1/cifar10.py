@@ -2,7 +2,8 @@ import pickle
 import gzip
 import logging
 
-from depth.sequential import NeuralNet
+from depth.models import Sequential
+from depth.layers import DenseLayer
 from depth.helpers import one_hot_encoding, vector_to_label
 from depth.metrics import categorical_accuracy
 from depth.optimizers import SGD
@@ -15,7 +16,7 @@ class CIFAR10NN():
         self.input_data_dimension = 32 * 32 * 3
         self.output_data_dimension = 10
 
-        self.learning_rate = 5e-1
+        self.learning_rate = 0.1
         self.error_threshold = 0.1
         self.momentum = 0.9
         self.regularization_coefficient = 0.01
@@ -39,16 +40,20 @@ class CIFAR10NN():
         # Create L2 regularizer
         regularizer = L2Regularizer(self.regularization_coefficient)
 
-        self.nn = NeuralNet()
-        self.nn.add_layer(
+        self.nn = Sequential()
+        self.nn.add_layer(DenseLayer(
             units=128, activation_function="tanh",
-            input_dimension=self.input_data_dimension, regularizer=regularizer)
-        self.nn.add_layer(units=128, activation_function="relu",
-                          regularizer=regularizer)
-        self.nn.add_layer(units=128, activation_function="tanh",
-                          regularizer=regularizer)
-        self.nn.add_layer(units=self.output_data_dimension,
-                          activation_function="tanh", regularizer=regularizer)
+            input_dimension=self.input_data_dimension, regularizer=regularizer
+        ))
+        self.nn.add_layer(DenseLayer(
+            units=128, activation_function="relu",
+            regularizer=regularizer))
+        self.nn.add_layer(DenseLayer(
+            units=128, activation_function="tanh",
+            regularizer=regularizer))
+        self.nn.add_layer(DenseLayer(
+            units=self.output_data_dimension,
+            activation_function="softmax", regularizer=regularizer))
         self.nn.compile(loss="cross_entropy",
                         error_threshold=self.error_threshold,
                         optimizer=optimizer)
@@ -99,7 +104,7 @@ class CIFAR10NN():
         return categorical_accuracy(predicted_output, target_output)
 
     def load_pretrained_network(self):
-        self.nn = NeuralNet()
+        self.nn = Sequential()
         self.nn.load_layer_weights(self.layers_filename)
 
     def predict(self, input_matrix):
