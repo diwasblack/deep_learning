@@ -42,18 +42,18 @@ class CIFAR10NN():
 
         self.nn = Sequential()
         self.nn.add_layer(DenseLayer(
-            units=128, activation_function="tanh",
+            units=128, activation="tanh",
             input_dimension=self.input_data_dimension, regularizer=regularizer
         ))
         self.nn.add_layer(DenseLayer(
-            units=128, activation_function="relu",
+            units=128, activation="relu",
             regularizer=regularizer))
         self.nn.add_layer(DenseLayer(
-            units=128, activation_function="tanh",
+            units=128, activation="tanh",
             regularizer=regularizer))
         self.nn.add_layer(DenseLayer(
             units=self.output_data_dimension,
-            activation_function="softmax", regularizer=regularizer))
+            activation="softmax", regularizer=regularizer))
         self.nn.compile(loss="cross_entropy",
                         error_threshold=self.error_threshold,
                         optimizer=optimizer)

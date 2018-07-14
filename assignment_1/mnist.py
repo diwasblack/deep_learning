@@ -42,16 +42,16 @@ class MNISTNN():
 
         self.nn = Sequential()
         self.nn.add_layer(DenseLayer(
-            units=32, activation_function="tanh",
+            units=32, activation="tanh",
             input_dimension=self.input_data_dimension, regularizer=regularizer
             ))
         self.nn.add_layer(DenseLayer(
-            units=32, activation_function="relu", regularizer=regularizer))
+            units=32, activation="relu", regularizer=regularizer))
         self.nn.add_layer(DenseLayer(
-            units=32, activation_function="tanh", regularizer=regularizer))
+            units=32, activation="tanh", regularizer=regularizer))
         self.nn.add_layer(DenseLayer(
             units=self.output_data_dimension,
-            activation_function="softmax", regularizer=regularizer))
+            activation="softmax", regularizer=regularizer))
         self.nn.compile(loss="cross_entropy",
                         error_threshold=self.error_threshold,
                         optimizer=optimizer)
