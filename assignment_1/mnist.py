@@ -6,7 +6,7 @@ from depth.models import Sequential
 from depth.layers import DenseLayer
 from depth.helpers import one_hot_encoding, vector_to_label
 from depth.metrics import categorical_accuracy
-from depth.optimizers import SGD
+from depth.optimizers import ADAM
 from depth.regularizers import L2Regularizer
 
 
@@ -16,7 +16,7 @@ class MNISTNN():
         self.input_data_dimension = 784
         self.output_data_dimension = 10
 
-        self.learning_rate = 0.1
+        self.learning_rate = 0.001
         self.error_threshold = 0.1
         self.momentum = 0.9
         self.regularization_coefficient = 0.01
@@ -35,7 +35,7 @@ class MNISTNN():
 
     def construct_nn(self):
         # First construct an optimizer to use
-        optimizer = SGD(lr=self.learning_rate, momentum=self.momentum)
+        optimizer = ADAM(lr=self.learning_rate)
 
         # Create L2 regularizer
         regularizer = L2Regularizer(self.regularization_coefficient)
