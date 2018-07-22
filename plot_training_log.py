@@ -20,13 +20,14 @@ def load_data(filepath):
         for line in lines:
             result = re.search(pattern, line)
 
-            iteration = int(result.group(1))
-            loss = float(result.group(2))
-            accuracy = float(result.group(3))
+            if(result):
+                iteration = int(result.group(1))
+                loss = float(result.group(2))
+                accuracy = float(result.group(3))
 
-            iterations.append(iteration)
-            losses.append(loss)
-            accuracies.append(accuracy)
+                iterations.append(iteration)
+                losses.append(loss)
+                accuracies.append(accuracy)
 
     return iterations, losses, accuracies
 
