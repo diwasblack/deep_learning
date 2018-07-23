@@ -1,0 +1,134 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{float}
+
+\title{Assignment for CS 696-04 \\ (Deep Learning)}
+\author{Diwas Sharma}
+\date{\today}
+\begin{document}
+
+\maketitle
+\newpage
+
+\section{Design}
+The implementation of convolution and max pooling layer is generalized enough
+so it can be used with other programs as well. Furthermore, the code for the
+CNN layers have been merge with the implementation of the Dense layers.
+Together the dense layers and the CNN layers can be stacked to any depth required
+and can be used to describe any valid neural network with dense and CNN layers.
+
+An example of convolution neural network that can be construct is given below.
+
+\begin{lstlisting}[language=python]
+from depth.models import Sequential
+from depth.layers import Convolution2D, Flatten, DenseLayer, MaxPooling
+from depth.optimizers import ADAM
+
+optimizer = ADAM(lr=0.01)
+nn = Sequential()
+
+self.nn = Sequential()
+self.nn.add_layer(Convolution2D(5, (3, 3), input_shape=(3, 32, 32)))
+self.nn.add_layer(MaxPooling(pool_size=(2, 2)))
+self.nn.add_layer(Convolution2D(10, (3, 3)))
+self.nn.add_layer(MaxPooling(pool_size=(2, 2)))
+self.nn.add_layer(Flatten())
+self.nn.add_layer(DenseLayer(units=32))
+self.nn.add_layer(DenseLayer(units=10, activation="softmax"))
+self.nn.compile(loss="cross_entropy", error_threshold=0.01,
+                optimizer=optimizer)
+
+\end{lstlisting}
+
+\section{CIFAR 10}
+\subsection{Network}
+The network that is used to classify the CIFAR 10 dataset is follows:
+
+\begin{enumerate}
+    \item{Convolution layer}
+        \begin{itemize}
+            \item{Input: $N * 3 * 32 * 32$ tensor}
+            \item{Filters: 4 filters with size $3*3$}
+            \item{Padding: 0 padded with pad width of 1}
+            \item{Stride: 1 on each dimension}
+            \item{Regularizer: $L_2$ Regularizer}
+        \end{itemize}
+    \item{Max pooling layer}
+        \begin{itemize}
+            \item{Input: $N * 4 * 32 * 32$ tensor}
+            \item{Pool size: $2*2$}
+            \item{Stride: 2 on each dimension}
+        \end{itemize}
+    \item{Convolution layer}
+        \begin{itemize}
+            \item{Input: $N * 4 * 16 * 16$ tensor}
+            \item{Filters: 8 filters with size $3*3$}
+            \item{Padding: 0 padded with pad width of 1}
+            \item{Stride: 1 on each dimension}
+            \item{Regularizer: $L_2$ Regularizer}
+        \end{itemize}
+    \item{Max pooling layer}
+        \begin{itemize}
+            \item{Input: $N * 8 * 16 * 16$ tensor}
+            \item{Pool size: $2*2$}
+            \item{Stride: 2 on each dimension}
+        \end{itemize}
+    \item{Convolution layer}
+        \begin{itemize}
+            \item{Input: $N * 8 * 8 * 8$ tensor}
+            \item{Filters: 16 filters with size $3*3$}
+            \item{Padding: 0 padded with pad width of 1}
+            \item{Stride: 1 on each dimension}
+            \item{Regularizer: $L_2$ Regularizer}
+        \end{itemize}
+    \item{Softmax layer}
+        \begin{itemize}
+            \item{Input: $512 * N$ tensor}
+            \item{Units: 10}
+        \end{itemize}
+\end{enumerate}
+
+\subsubsection{Source Code}
+\begin{lstlisting}[language=python]
+optimizer = ADAM(lr=0.01)
+regularizer = L2Regularizer(0.01)
+
+self.nn = Sequential()
+self.nn.add_layer(Convolution2D(
+    4, (3, 3), input_shape=(3, 32, 32), regularizer=regularizer))
+self.nn.add_layer(MaxPooling(pool_size=(2, 2)))
+self.nn.add_layer(Convolution2D(8, (3, 3), regularizer=regularizer))
+self.nn.add_layer(MaxPooling(pool_size=(2, 2)))
+self.nn.add_layer(Convolution2D(16, (3, 3), regularizer=regularizer))
+self.nn.add_layer(Flatten())
+self.nn.add_layer(DenseLayer(units=10, activation="softmax"))
+self.nn.compile(loss="cross_entropy", error_threshold=0.01,
+                optimizer=optimizer)
+\end{lstlisting}
+
+\subsection{Training}
+The network was trained using ADAM optimizer with mini batch size of 256. The parameters
+used for the optimizer were $\eta$ = 0.01, $\beta_1$ = 0.9 and 
+$\beta_2$ = 0.999.
+
+The plot for training loss per mini batch is shown in figure {\ref{fig:training_loss}}
+and the plot of training accuracy per mini batch is shown in figure {\ref{fig:training_accuracy}}.
+
+\begin{figure}[!ht]
+  \includegraphics[width=\textwidth,height=0.35\textheight,keepaspectratio]{cifar10_training_loss.png}
+  \caption{Training Loss}
+  \label{fig:training_loss}
+\end{figure}
+
+\begin{figure}[!ht]
+  \includegraphics[width=\textwidth,height=0.35\textheight,keepaspectratio]{cifar10_training_accuracy.png}
+  \caption{Training accuracy}
+  \label{fig:training_accuracy}
+\end{figure}
+
+\subsection{Testing}
+The accuracy obtained on the test data is 0.536.
+
+\end{document}
