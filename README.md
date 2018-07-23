@@ -11,3 +11,7 @@ In this assignment, you are asked to implement a deep fully-connected MLP with t
 5. Hard copy of report submitted in class on June 27th. The program is zipped into a single YourfistnameYourLastName.zip file and submit it online before class starts that day.
 
 Please download Assignemnt One.zip file. Unzip cifar- file。 Check the two ipynb files for loading the data sets.
+
+Assignemnt 2
+------------
+In this program assignment, you are asked to implement Convnet for Cifar-10 dataset.  You need to implement conv layer, pooling layer and their backpropagation.   
