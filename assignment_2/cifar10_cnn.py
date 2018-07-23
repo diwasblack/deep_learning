@@ -32,12 +32,12 @@ class CIFAR10CNN():
 
         self.nn = Sequential()
         self.nn.add_layer(Convolution2D(
-            5, (3, 3), input_shape=(3, 32, 32), regularizer=regularizer))
+            4, (3, 3), input_shape=(3, 32, 32), regularizer=regularizer))
         self.nn.add_layer(MaxPooling(pool_size=(2, 2)))
-        self.nn.add_layer(Convolution2D(10, (3, 3), regularizer=regularizer))
+        self.nn.add_layer(Convolution2D(8, (3, 3), regularizer=regularizer))
         self.nn.add_layer(MaxPooling(pool_size=(2, 2)))
+        self.nn.add_layer(Convolution2D(16, (3, 3), regularizer=regularizer))
         self.nn.add_layer(Flatten())
-        self.nn.add_layer(DenseLayer(units=32, regularizer=regularizer))
         self.nn.add_layer(DenseLayer(units=10, activation="softmax"))
         self.nn.compile(loss="cross_entropy", error_threshold=0.01,
                         optimizer=optimizer)
