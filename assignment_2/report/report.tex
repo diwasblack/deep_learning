@@ -92,7 +92,7 @@ The network that is used to classify the CIFAR 10 dataset is follows:
 
 \subsubsection{Source Code}
 \begin{lstlisting}[language=python]
-optimizer = ADAM(lr=0.01)
+optimizer = ADAM(lr=0.001)
 regularizer = L2Regularizer(0.01)
 
 self.nn = Sequential()
@@ -105,12 +105,12 @@ self.nn.add_layer(Convolution2D(16, (3, 3), regularizer=regularizer))
 self.nn.add_layer(Flatten())
 self.nn.add_layer(DenseLayer(units=10, activation="softmax"))
 self.nn.compile(loss="cross_entropy", error_threshold=0.01,
-                optimizer=optimizer)
+                optimizer=optimizer, mini_batch_size=1024)
 \end{lstlisting}
 
 \subsection{Training}
-The network was trained using ADAM optimizer with mini batch size of 256. The parameters
-used for the optimizer were $\eta$ = 0.01, $\beta_1$ = 0.9 and 
+The network was trained using ADAM optimizer with mini batch size of 1024. The parameters
+used for the optimizer were $\eta$ = 0.001, $\beta_1$ = 0.9 and 
 $\beta_2$ = 0.999.
 
 The plot for training loss per mini batch is shown in figure {\ref{fig:training_loss}}

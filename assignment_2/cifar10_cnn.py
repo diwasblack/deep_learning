@@ -26,7 +26,7 @@ class CIFAR10CNN():
         logger.addHandler(fh)
 
         # Construct the network
-        optimizer = ADAM(lr=0.01)
+        optimizer = ADAM(lr=0.001)
 
         regularizer = L2Regularizer(0.01)
 
@@ -45,7 +45,7 @@ class CIFAR10CNN():
         self.nn.train(
             x_train, y_train, logging_frequency=1, max_epochs=20,
             training_logger=logger, update_frequency=100,
-            layers_filename=self.weights_filename, mini_batch_size=256)
+            layers_filename=self.weights_filename, mini_batch_size=1024)
 
     def store_test_data(self, x_test, y_test):
         logging.info("Storing test data")
