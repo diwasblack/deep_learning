@@ -1,0 +1,128 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{float}
+
+\title{Assignment for CS 696-04 \\ (Deep Learning)}
+\author{Diwas Sharma}
+\date{\today}
+\begin{document}
+
+\maketitle
+\newpage
+
+\section{Design}
+The code that is used to train and test CIFAR-10 dataset uses the interface provided by
+keras \footnote{https://keras.io/}.
+
+\section{CIFAR 10}
+\subsection{Network}
+The network that is used to classify the CIFAR 10 dataset is follows:
+
+\begin{enumerate}
+    \item{Convolution layer}
+        \begin{itemize}
+            \item{Input: $N * 3 * 32 * 32$ tensor}
+            \item{Filters: 4 filters with size $3*3$}
+            \item{Padding: 0 padded with pad width of 1}
+            \item{Stride: 1 on each dimension}
+            \item{Regularizer: $L_2$ Regularizer}
+        \end{itemize}
+    \item{Max pooling layer}
+        \begin{itemize}
+            \item{Input: $N * 4 * 32 * 32$ tensor}
+            \item{Pool size: $2*2$}
+            \item{Stride: 2 on each dimension}
+        \end{itemize}
+    \item{Convolution layer}
+        \begin{itemize}
+            \item{Input: $N * 4 * 16 * 16$ tensor}
+            \item{Filters: 8 filters with size $3*3$}
+            \item{Padding: 0 padded with pad width of 1}
+            \item{Stride: 1 on each dimension}
+            \item{Regularizer: $L_2$ Regularizer}
+        \end{itemize}
+    \item{Max pooling layer}
+        \begin{itemize}
+            \item{Input: $N * 8 * 16 * 16$ tensor}
+            \item{Pool size: $2*2$}
+            \item{Stride: 2 on each dimension}
+        \end{itemize}
+    \item{Convolution layer}
+        \begin{itemize}
+            \item{Input: $N * 8 * 8 * 8$ tensor}
+            \item{Filters: 16 filters with size $3*3$}
+            \item{Padding: 0 padded with pad width of 1}
+            \item{Stride: 1 on each dimension}
+            \item{Regularizer: $L_2$ Regularizer}
+        \end{itemize}
+    \item{Softmax layer}
+        \begin{itemize}
+            \item{Input: $512 * N$ tensor}
+            \item{Units: 10}
+        \end{itemize}
+\end{enumerate}
+
+\subsubsection{Source Code}
+\begin{lstlisting}[language=python]
+# Create the model
+model = Sequential()
+
+# Create the regularizer
+regularizer = l2(0.01)
+
+model.add(
+    Conv2D(
+        4, kernel_size=(3, 3), activation='relu', input_shape=(32, 32, 3),
+        kernel_regularizer=regularizer
+    )
+)
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(
+    Conv2D(
+        16, kernel_size=(3, 3), activation='relu',
+        kernel_regularizer=regularizer
+    )
+)
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(
+    Conv2D(
+        32, kernel_size=(3, 3), activation='relu',
+        kernel_regularizer=regularizer
+    )
+)
+model.add(Flatten())
+model.add(Dense(10, activation='softmax'))
+
+# Compile the model
+model.compile(loss='categorical_crossentropy',
+              optimizer=Adam(lr=0.0001, decay=1e-6),
+metrics=['accuracy'])
+\end{lstlisting}
+
+\subsection{Training}
+The network was trained using ADAM optimizer with mini batch size of 128. And, the
+parameters used for the optimizer were $\eta$ = 0.0001, $\beta_1$ = 0.9 and
+$\beta_2$ = 0.999 with learning rate decay of $1e-6$.
+
+The figure \ref{fig:training_loss} shows the plot of loss at the end of each epoch
+during the training, similarly the figure \ref{fig:training_accuracy} shows the
+accuracy at the end of each epoch during the training phase.
+
+\begin{figure}[!ht]
+  \includegraphics[width=\textwidth,height=0.35\textheight,keepaspectratio]{cifar10_loss.png}
+  \caption{Training loss}
+  \label{fig:training_loss}
+\end{figure}
+
+\begin{figure}[!ht]
+  \includegraphics[width=\textwidth,height=0.35\textheight,keepaspectratio]{cifar10_accuracy.png}
+  \caption{Training accuracy}
+  \label{fig:training_accuracy}
+\end{figure}
+
+\subsection{Testing}
+The accuracy obtained on the test data after training for 300 epochs is 0.6074.
+
+\end{document}
